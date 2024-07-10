@@ -1,29 +1,21 @@
-
+// src/App.jsx
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
 import Employees from './pages/Employees';
-import Products from './pages/Products';
-import UserList from './pages/UserList';
-import UserProfile from './pages/UserProfile';
+import Home from './pages/Home';
 
-  
-export async function loader() {
-  const contacts = await getContacts();
-  return { contacts };
-}
 
-function App() {
+const App = () => {
   return (
-    
-      <Navbar />,
-      <Home />,
-      <Products />,
-      <UserList />,
-      <Employees />,
-      <UserProfile />
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/home" element={<Home />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

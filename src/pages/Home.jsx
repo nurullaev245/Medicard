@@ -1,12 +1,13 @@
-import { Outlet } from "react-router-dom";
+// src/pages/Home.jsx
+import React from 'react';
 
-export default function Root() {
+const Home = () => {
   return (
-    <>
-      {/* all the other elements */}
-      <div id="detail">
-        <Outlet />
-      </div>
-    </>
+    <div>
+      <h1>Home Page</h1>
+      <p>This is the Home page content.</p>
+    </div>
   );
-}
+};
+
+export default Home;

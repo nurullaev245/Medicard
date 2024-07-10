@@ -1,9 +1,13 @@
-import React from 'react'
+// src/pages/Userlist.jsx
+import React from 'react';
 
 const Userlist = () => {
   return (
-    <div>Userlist</div>
-  )
-}
+    <div>
+      <h1>Userlist Page</h1>
+      <p>This is the Userlist page content.</p>
+    </div>
+  );
+};
 
-export default Userlist
+export default Userlist;

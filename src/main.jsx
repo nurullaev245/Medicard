@@ -1,12 +1,13 @@
 import React, { Children } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
-import './index.css'
-import Home from './pages/Home.jsx'
-import Employes from './pages/Employes.jsx'
-import Products from './pages/Products.jsx'
+ import './index.css'
+ import Home from './pages/Home.jsx'
+ import Employees from './pages/Employees.jsx'
+ import Products from './pages/Products.jsx'
 import UserProfile from './pages/UserProfile.jsx'
 import { createBrowserRouter } from 'react-router-dom'
+
 
 
 
@@ -21,8 +22,8 @@ const router = createBrowserRouter([
     // errorElement: <ErrorPage />,
     children: [
       {
-        path: "/Employes",
-        element: <Employes />,
+        path: "/Employees",
+        element: <Employees />,
       },
       {
         path: "/Home",
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
         path: "/Products",
         element: <Products />,
       },
-
+  
     ],
   },
 ]);
