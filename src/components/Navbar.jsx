@@ -7,25 +7,29 @@ const Navbar = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [email, setEmail] = useState('default@example.com');
-  const [password, setPassword] = useState('defaultpassword');
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [storedUser, setStoredUser] = useState({});
   const [registerSuccess, setRegisterSuccess] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
+  const [userList, setUserList] = useState([]);
 
   const location = useLocation();
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('storedUser'));
     const loggedIn = JSON.parse(localStorage.getItem('isLoggedIn'));
+    const users = JSON.parse(localStorage.getItem('userList')) || [];
     if (savedUser) {
       setStoredUser(savedUser);
     }
     if (loggedIn) {
       setIsLoggedIn(loggedIn);
     }
+    setUserList(users);
   }, []);
 
   const handleRegister = (e) => {
@@ -33,6 +37,11 @@ const Navbar = () => {
     const user = { name, number, email, password };
     setStoredUser(user);
     localStorage.setItem('storedUser', JSON.stringify(user));
+
+    const updatedUserList = [...userList, user];
+    setUserList(updatedUserList);
+    localStorage.setItem('userList', JSON.stringify(updatedUserList));
+
     setShowRegisterModal(false);
     setRegisterSuccess(true);
     setTimeout(() => setRegisterSuccess(false), 3000);
@@ -40,7 +49,8 @@ const Navbar = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (email === storedUser.email && password === storedUser.password) {
+    const user = userList.find(user => user.email === email && user.password === password);
+    if (user) {
       setIsLoggedIn(true);
       localStorage.setItem('isLoggedIn', true);
       setShowLoginModal(false);
@@ -56,10 +66,23 @@ const Navbar = () => {
     localStorage.setItem('isLoggedIn', false);
   };
 
-  const shouldShowCards = location.pathname === '/';
+  const handleProfileUpdate = (e) => {
+    e.preventDefault();
+    const updatedUser = { ...storedUser, name, number, email, password };
+    const updatedUserList = userList.map(user =>
+      user.email === storedUser.email ? updatedUser : user
+    );
+    setStoredUser(updatedUser);
+    setUserList(updatedUserList);
+    localStorage.setItem('storedUser', JSON.stringify(updatedUser));
+    localStorage.setItem('userList', JSON.stringify(updatedUserList));
+    setIsEditingProfile(false);
+  };
 
+  const shouldShowCards = location.pathname === '/';
   const isEmployees = location.pathname.toLowerCase() === '/employees';
   const isProducts = location.pathname.toLowerCase() === '/products';
+  const isUserList = location.pathname.toLowerCase() === '/userlist';
 
   return (
     <div>
@@ -160,7 +183,7 @@ const Navbar = () => {
               </div>
             </div>
           </div>
-        </div> 
+        </div>
       )}
 
       {isEmployees && (
@@ -169,7 +192,7 @@ const Navbar = () => {
           <div className='flex justify-between m-10'>
             <div className="card card-compact bg-indigo-600 w-96 shadow-xl">
               <figure>
-                <img src="https://lh3.googleusercontent.com/pw/AP1GczOE6A_lL6CxOLNGCHsC2-ZY0vg1ZESlUIIa8X7Pz1YaMzUTR45mZfhVg9dncPyg7mMDLREaJkvgdpCKNnYaCj1WHS-fxVL0HW1U1h1GEoW1cW1ATcX-t73E00JUDtrfuxNGutfGlQFR3ZxwcoQvYMUxdQzfrvrtBRf82NxpX5bviX-hmcmdO9YppQSKj6v6HxgIW_NHLqxrQ4Jagzw8HUA7KSiKAiTo1WpwvJ-LX3iiS4ZAMgD8_9FnVLQB_XgETjl2wj32tq5nP10EIlosVAU64cSO-Av575OzekJKqa_mIv7qNnqeM-hEdrlEe1fw9_gdFGFGJRUqcejbVgzU-wk-EuxMW56xbKw_BFbCUVqLFg_banK6wO5DxnWVjCM4iTmkfcls2dtq2Abcdfl4Tz-fTKs1_FtTux4Xw-by8oJVZHBHqjjjnPeRXKji2v-IavoUnwGJjj0cTsdyCK2zuEcQ4sgfVK6TCV65bc8vov3CS-vv-CX7L0g8yl_CtuMi4M0Ga3LvMcjzzQPRekT03RRFgmtG5urIpJLXI9_lslLxviK85LgwlRjzuQL8B6ZKy2h2eDWfOrFXtJoib_1uA6GhueDn1ODMR9UG2ZuAYbshwu9c0gB2rJNIg5VTWknghYGcbhSQ5MD7LHZlmfqEGU-rkImCuYZa7hy78A2Che3lRpxwlCaoy6qnv8JTTEEQTqQKGO4yDkgm5GmSgY7pPWjD8czmAqZwzoHtBTY8IZaiDMp0TL_vnZRJaF9lvOZucks-Gr_SLeE4YCdVhGzDeamY3cmK0___k6dqxg-qJF-jNrLwFHgsgLD11EqY0w-fBuX1Rz3LYuYUmdZ-t4vD9W7kAM2l-jRweGMUEvXXnMeTgc7md701HOE66T7JQpgU6W9qhNSFMAutfqIgVGGMP6FzwrOURkS23tLdho06vbu-GZmhCqrlr_hc5Fmc=w913-h913-s-no-gm?authuser=1" alt="Manager" />
+                <img src="https://media.istockphoto.com/id/538665020/photo/internet-meme-why-you-no-rage-face-3d-illustration.jpg?s=612x612&w=0&k=20&c=5D_g8Jy8kqg5Op2bb4RvcH8_6y0HGPqt29TKDrEqLyM=" alt="Manager" />
               </figure>
               <div className="card-body">
                 <h2 className="card-title">Manager: Abdurazzoq</h2>
@@ -258,6 +281,23 @@ const Navbar = () => {
         </div>
       )}
 
+      {isUserList && (
+        <div>
+          <h1 className="text-3xl font-bold my-5">User List</h1>
+          <div className="flex flex-col m-10">
+            {userList.map((user, index) => (
+              <div key={index} className="card card-compact bg-blue-600 w-full shadow-xl mb-4">
+                <div className="card-body">
+                  <h2 className="card-title">{user.name}</h2>
+                  <p><strong>Email:</strong> {user.email}</p>
+                  <p><strong>Number:</strong> {user.number}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Register Modal */}
       <dialog id="register-modal" className="modal" open={showRegisterModal}>
         <form method="dialog" className="modal-box" onSubmit={handleRegister}>
@@ -336,12 +376,58 @@ const Navbar = () => {
       <dialog id="profile-modal" className="modal" open={showProfileModal}>
         <div className="modal-box">
           <h3 className="font-bold text-lg">Profile Information</h3>
-          <div className="py-4">
-            <p><strong>Name:</strong> {storedUser.name}</p>
-            <p><strong>Number:</strong> {storedUser.number}</p>
-            <p><strong>Email:</strong> {storedUser.email}</p>
-          </div>
+          {isEditingProfile ? (
+            <form onSubmit={handleProfileUpdate}>
+              <div className="py-4">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  className="input input-bordered w-full mb-2"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Number"
+                  className="input input-bordered w-full mb-2"
+                  value={number}
+                  onChange={(e) => setNumber(e.target.value)}
+                  required
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="input input-bordered w-full mb-2"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className="input input-bordered w-full mb-2"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="modal-action">
+                <button type="submit" className="btn btn-primary">Save</button>
+                <button className="btn" onClick={() => setIsEditingProfile(false)}>Cancel</button>
+              </div>
+            </form>
+          ) : (
+            <div className="py-4">
+              <p><strong>Name:</strong> {storedUser.name}</p>
+              <p><strong>Number:</strong> {storedUser.number}</p>
+              <p><strong>Email:</strong> {storedUser.email}</p>
+            </div>
+          )}
           <div className="modal-action">
+            {isEditingProfile ? null : (
+              <button className="btn" onClick={() => setIsEditingProfile(true)}>Edit</button>
+            )}
             <button className="btn" onClick={() => setShowProfileModal(false)}>Close</button>
           </div>
         </div>
@@ -357,6 +443,19 @@ const Navbar = () => {
         <div className="fixed top-5 right-5">
           <button className="btn btn-success">Login Successful</button>
         </div>
+      )}
+
+      {(shouldShowCards || isEmployees || isProducts || isUserList) && (
+        <footer className="bg-base-100 py-4 mt-10">
+          <div className="text-center">
+            <img className="w-10 inline-block mb-2" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/2048px-Telegram_logo.svg.png" alt="Telegram Logo" />
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+            <div className="flex justify-center gap-4 mt-2">
+              <Link to="/support" className="link link-hover">Support</Link>
+              <Link to="/privacy-policy" className="link link-hover">Privacy Policy</Link>
+            </div>
+          </div>
+        </footer>
       )}
     </div>
   );
